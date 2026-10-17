@@ -24,23 +24,8 @@ const YEARS = ['1st year', '2nd year', '3rd year', '4th year', '5th+', 'Graduate
 
 const STORAGE_KEY = 'zotstudy-onboarding'
 
-function loadDraft() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}')
-    return {
-      name: saved.name || '',
-      email: saved.email || '',
-      major: saved.major || '',
-      year: saved.year || '',
-      courses: Array.isArray(saved.courses) ? saved.courses : [],
-    }
-  } catch {
-    return { name: '', email: '', major: '', year: '', courses: [] }
-  }
-}
-
 export default function Onboarding() {
-  const [form, setForm] = useState(loadDraft)
+  const [form, setForm] = useState({ name: '', email: '', major: '', year: '', courses: [] })
   const [errors, setErrors] = useState({})
   const [saved, setSaved] = useState(false)
   const [step, setStep] = useState(1)
@@ -74,7 +59,6 @@ export default function Onboarding() {
     if (Object.keys(nextErrors).length) {
       setErrors(nextErrors)
       setSaved(false)
-      setStep(2)
       return
     }
 
@@ -129,7 +113,7 @@ export default function Onboarding() {
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(profile))
     console.log('Onboarding student info', profile)
-    setSaved(true)
+    setStep(2)
   }
 
   return (
@@ -228,11 +212,6 @@ export default function Onboarding() {
               Continue
             </button>
 
-            {saved && (
-              <p className="onboarding-saved" role="status">
-                Student info saved. Classes step comes next.
-              </p>
-            )}
           </form>
         </>
         )}
