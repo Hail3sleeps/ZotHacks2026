@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './Onboarding.css'
+import { saveProfile } from '../lib/users'
 
 const MAJORS = [
   'Computer Science',
@@ -53,7 +54,7 @@ export default function Onboarding() {
     return next
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
     const nextErrors = validate()
     if (Object.keys(nextErrors).length) {
@@ -113,6 +114,16 @@ export default function Onboarding() {
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(profile))
     console.log('Onboarding student info', profile)
+        try {
+      await saveProfile({
+        name: profile.name,
+        email: profile.email,
+        major: profile.major,
+        year: profile.year,
+      })
+    } catch (err) {
+      console.error('Could not save profile to Firebase', err)
+    }
     setStep(2)
   }
 
