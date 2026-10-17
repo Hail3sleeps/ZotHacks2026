@@ -1,13 +1,46 @@
 import './App.css'
 import anteater from './anteater-studying.png'
 import { FcGoogle } from 'react-icons/fc'
-import { FaFacebookSquare } from 'react-icons/fa'
+import { useGoogleLogin } from '@react-oauth/google'
 
 function Login() {
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const res = await fetch(
+          'https://www.googleapis.com/oauth2/v3/userinfo',
+          {
+            headers: {
+              Authorization: `Bearer ${tokenResponse.access_token}`,
+            },
+          }
+        )
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch user info')
+        }
+
+        const user = await res.json()
+
+        if (!user.email?.toLowerCase().endsWith('@uci.edu')) {
+          alert('Please use your UCI email.')
+          return
+        }
+
+        console.log('Logged in as', user.name, user.email)
+      } catch (error) {
+        console.error(error)
+        alert('Google login failed')
+      }
+    },
+    onError: () => alert('Google login failed'),
+  })
+
   return (
     <div className="login-page">
       <div className="login-box">
         <h2>Login</h2>
+
         <form>
           <label>Username:</label>
           <input type="text" />
@@ -28,8 +61,13 @@ function Login() {
         </div>
 
         <div className="social">
-          <button className="social-button"><FcGoogle /></button>
-          <button className="social-button"><FaFacebookSquare color="#3b5998" /></button>
+          <button
+            type="button"
+            className="social-button"
+            onClick={() => googleLogin()}
+          >
+            <FcGoogle />
+          </button>
         </div>
 
         <button className="signup-button">Sign Up</button>
