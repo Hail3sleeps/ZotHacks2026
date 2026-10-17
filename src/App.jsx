@@ -1,4 +1,4 @@
-import Onboarding from './pages/Onboarding.jsx'
+import Onboarding from './onboarding/Onboarding.jsx'
 
 function App() {
   return <Onboarding />
