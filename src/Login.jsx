@@ -1,9 +1,10 @@
 import './App.css'
-import anteater from './anteater-studying.png'
+import anteater from './anteaterstudying.png'
 import { FcGoogle } from 'react-icons/fc'
 import { useGoogleLogin } from '@react-oauth/google'
-
+import { useNavigate } from 'react-router-dom'
 function Login() {
+  const navigate = useNavigate()
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
@@ -70,7 +71,13 @@ function Login() {
           </button>
         </div>
 
-        <button className="signup-button">Sign Up</button>
+        <button
+  className="signup-button"
+  type="button"
+  onClick={() => navigate('/signup')}
+>
+  Sign Up
+</button>
       </div>
 
       <div className="welcome">
